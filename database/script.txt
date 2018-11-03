@@ -1,0 +1,10 @@
+insert into usuario (matricula, nome, curso,senha) values ('2018','Hércules Silva','LCC','123');
+insert into material (descricao, filtro, tipo,foipego) values ('Livro de computacao','sem filtro','Livro',1)
+
+/*
+select * from usuario 
+select * from material 
+select * from postagem
+select * from adquirido
+
+*/

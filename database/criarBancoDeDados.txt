@@ -1,0 +1,29 @@
+CREATE TABLE `usuario` (
+	`idUsuario`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+	`matricula`	TEXT NOT NULL UNIQUE,
+	`nome`	TEXT NOT NULL,
+	`curso`	TEXT NOT NULL,
+	`senha`	TEXT NOT NULL
+);
+
+CREATE TABLE `material` (
+	`idMaterial`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+	`descricao`	TEXT NOT NULL,
+	`filtro`	TEXT NOT NULL,
+	`tipo`	TEXT NOT NULL,
+	`foipego`	INTEGER
+);
+
+CREATE TABLE `adquirido` (
+	`idUsuario`	INTEGER NOT NULL,
+	`idMaterial`	INTEGER NOT NULL,
+	FOREIGN KEY(`idMaterial`) REFERENCES `material`(`idMaterial`),
+	FOREIGN KEY(`idUsuario`) REFERENCES `usuario`(`idUsuario`)
+);
+
+CREATE TABLE `postagem` (
+	`idUsuario`	INTEGER NOT NULL,
+	`idMaterial`	INTEGER NOT NULL,
+	FOREIGN KEY(`idMaterial`) REFERENCES `material`(`idMaterial`),
+	FOREIGN KEY(`idUsuario`) REFERENCES `usuario`(`idUsuario`)
+);
