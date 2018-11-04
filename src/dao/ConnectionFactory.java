@@ -8,26 +8,29 @@ import java.sql.SQLException;
  * Classe para criar uma conexao com o banco de dados que está na pasta badabase
  * */
 public class ConnectionFactory {
+	
+	private String PATH = "database";
 	private final String NOME = "dados.db";
-	public static String USUARIO = "usuario";
-	public static String MATERIAL = "material";
-	public static String POSTAGEM = "postagem";
-	public static String ADQUIRIDO = "adquirido";
+	public final static String USUARIO = "usuario";
+	public final static String MATERIAL = "material";
+	public final static String POSTAGEM = "postagem";
+	public final static String ADQUIRIDO = "adquirido";
 	
 	/**
 	 * Método usado para criar a conexao
 	 * 
 	 * */
 	public Connection getConnection() throws SQLException {
-		return DriverManager.getConnection("jdbc:sqlite:database\\"+NOME);
-	
-	}
-	
-
-	public boolean criaBancoDeDados() {
+		
+		// descobrir sistema operacional
+		String systemName = System.getProperty("os.name");
+		
+		if (systemName.equalsIgnoreCase("linux")) PATH +="/"; 	// para linux
+		else PATH+="\\";										// para windows
 		
 		
-		return false;
+		return DriverManager.getConnection("jdbc:sqlite:"+PATH+""+NOME);
+	
 	}
 	
 }

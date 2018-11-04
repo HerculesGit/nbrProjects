@@ -76,7 +76,7 @@ public class MaterialDAO {
 					+ " informe o id no parametro").printStackTrace();
 			return false;
 		} else {
-			String sql = "UPDADE " + TABELA_MATERIAL + " SET " + DESCRICAO+ "=?," + FILTRO+ "=?," + TIPO+ "=?" + FOI_PEGO+"=?"
+			String sql = "UPDATE " + TABELA_MATERIAL + " SET " + DESCRICAO+ "=?," + FILTRO+ "=?," + TIPO+ "=?" + FOI_PEGO+"=?"
 					+ " WHERE "+ID_MATERIAL+"=?";
 			
 			try (PreparedStatement pstmt = connection.prepareStatement(sql)) {

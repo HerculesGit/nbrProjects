@@ -1,10 +1,15 @@
+/*
+insert into usuario (matricula, nome, curso,senha) values ('2019','Mario Santana','SI','321');
 insert into usuario (matricula, nome, curso,senha) values ('2018','Hércules Silva','LCC','123');
 insert into material (descricao, filtro, tipo,foipego) values ('Livro de computacao','sem filtro','Livro',1)
-
+insert into material (descricao, filtro, tipo,foipego) values ('A grande muralha','sem filtro','Revista',0);
+insert into adquirido (idUsuario, idMaterial) values (1,1);
+*/
 /*
 select * from usuario 
 select * from material 
 select * from postagem
 select * from adquirido
-
 */
+select * from usuario,adquirido where usuario.idUsuario=adquirido.idUsuario and usuario.idUsuario=1
+

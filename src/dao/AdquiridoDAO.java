@@ -2,6 +2,7 @@ package dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +57,7 @@ public class AdquiridoDAO {
 	 * Precisa ter os dois id's
 	 * */
 	public boolean alterarAquisicao(int idUsuario, int idMaterial) {
-		String sql = "UPDADE " + TABELA_ADQUIRIDO + " SET " + ID_USUARIO+"=?," + ID_MATERIAL
+		String sql = " " + TABELA_ADQUIRIDO + " SET " + ID_USUARIO+"=?," + ID_MATERIAL
 				+ " WHERE "+ID_USUARIO+"=? AND "+ID_MATERIAL+"=?";
 		
 		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
@@ -73,6 +74,7 @@ public class AdquiridoDAO {
 	}
 	
 	/**
+	 * @param idUsuario
 	 * Remove uma quisicao(adquirir) feita pelo usuario
 	 * */
 	public boolean removerUmaAquisicao(int idUsuario, int idMaterial) {
@@ -93,9 +95,19 @@ public class AdquiridoDAO {
 	
 	
 	/**
-	 * 
+	 * @param idUsuario - id do usuario para remover todas as aquisicoes
 	 * */ 
-	public boolean removerTodasAquisicoesUsuario(Usuario user) {
+	public boolean removerTodasAquisicoesUsuario(int idUsuario) {
+		String sql = "DELETE FROM " + TABELA_ADQUIRIDO +
+				" WHERE "+ID_USUARIO+"=? ;";
+		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+			pstmt.setInt(1,idUsuario);
+			pstmt.execute();
+			
+			return true;
+		} catch (SQLException e) {
+			 new Exception("Erro ao tentar remover todas as aquisicoes do usuario: " + e.getMessage());
+		}
 		
 		return false;
 	}
@@ -105,16 +117,58 @@ public class AdquiridoDAO {
 	 * @param user - Pesquisa pelo id ou pela matricula
 	 * 
 	 * */
-	public List<Adquirido> listarPostagemDe(Usuario user){
+	public List<Adquirido> listarAquisicoesDe(Usuario user){
 		List<Adquirido> lista = new ArrayList<Adquirido>();
 		
+		// se nao foi informado id
+		if (user.getId() < 0) {
+			UsuarioDAO usuarioDAO = new UsuarioDAO();
+			user = usuarioDAO.usuario(user.getMatricula());	
+		}
 		
+		String sql = "SELECT * FROM "+ConnectionFactory.USUARIO+","+ ConnectionFactory.ADQUIRIDO
+				+ " WHERE "
+				// fazendo o plano cartesiano
+				+ ConnectionFactory.USUARIO+"."+UsuarioDAO.ID_USUARIO+"="+ConnectionFactory.ADQUIRIDO+"."+ID_USUARIO
+				+ " AND "+ConnectionFactory.USUARIO+"."+UsuarioDAO.ID_USUARIO+"=? ;";
 		
+		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+			pstmt.setInt(1, user.getId());
+			ResultSet rs = pstmt.executeQuery();
+			
+			// sempre que tiver um proximo faca a leitura
+			while (rs.next()) {
+				Adquirido adquirido = new Adquirido();
+				adquirido.setIdUsuario(rs.getInt(ID_USUARIO));
+				adquirido.setIdMaterial(rs.getInt(ID_MATERIAL));
+				lista.add(adquirido);
+			}
+			rs.close();
+			return lista;
+		} catch (SQLException e) {
+			new Exception("Erro ao listar listarAquisicoesDe: " + e.getMessage());
+		}
 		return lista;
 	}
 	
 	public List<Adquirido> listar(){
-		return null;
+		List<Adquirido> lista = new ArrayList<Adquirido>();
+		String sql = "SELECT * FROM "+TABELA_ADQUIRIDO+";";
+		try(PreparedStatement pstmt = connection.prepareStatement(sql)){
+			ResultSet rs = pstmt.executeQuery();
+			while (rs.next()) {
+				Adquirido adquirido = new Adquirido();
+				adquirido.setIdUsuario(rs.getInt(ID_USUARIO));
+				adquirido.setIdMaterial(rs.getInt(ID_MATERIAL));
+				lista.add(adquirido);
+			}
+
+			rs.close();
+			return lista;
+		} catch (SQLException e) {
+			new Exception("Erro ao listar todas as aquisicoes: " + e.getMessage());
+		}
+		return lista;
 		
 	}
 	
